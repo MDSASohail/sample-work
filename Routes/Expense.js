@@ -1,19 +1,18 @@
 const route=require('express').Router();
 const expenseSchemma=require('../Schemma/Expand');
-
+const Total=require('../Schemma/Total');
 //Save a expense
 route.post('/save',async (req,res)=>{
-    console.log('Expense are ',req.body);
     try {
         const dataToSave=new expenseSchemma({
             amount:req.body.expense.amount,
             description:req.body.expense.description,
             category:req.body.expense.category,
             userId:req.body.expense.userId
+
         })
         const savedExpense=await dataToSave.save();
-        console.log(savedExpense);
-        res.status(200).json(savedExpense);
+        res.status(200).json({savedExpense:savedExpense});
     } catch (error) {
         res.status(400).json(error.message);
     }
@@ -25,18 +24,23 @@ route.post('/allExpense', async (req, res) => {
     const userId = req.body.userId;
     
     try {
-        // Fetch all expenses for the given user and sort by createdAt in ascending order
         const allExpense = await expenseSchemma.find({ userId: userId }).sort({ createdAt: -1 });
-        console.log(allExpense)
-        // Send the sorted expenses back in the response
         res.status(200).json(allExpense);
     } catch (error) {
-        // Log the error and send a 500 status with an error message
-        console.error("Error in fetching allExpense", error.message);
         res.status(500).json({ error: "Error in fetching all expenses" });
     }
 });
 
+
+// route.post('/total',async(req,res)=>{
+//      try {
+//         const data= await Total.findOne({userId:req.body.userId});
+//         console.log("Get total",data);
+//         res.status(200).json(data)
+//      } catch (error) {
+//         res.status(400).json(error);
+//      }
+// })
 
 
 module.exports=route;

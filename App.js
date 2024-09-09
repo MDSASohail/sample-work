@@ -26,7 +26,6 @@ app.use('/expense',expense);
 
 
 
-
 app.get('*',(req,res)=>{
     res.send("Page not found");
 })
